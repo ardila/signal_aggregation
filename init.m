@@ -14,6 +14,7 @@ function G = init()
         G.Fmn=200;
         G.Nbnds=256;
         G.Nphs=256;
+        G.Nft=4096;
         G.plot_spectral_tensor = 0;
         
     %% Colorization
