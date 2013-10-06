@@ -1,11 +1,10 @@
-%% dash
 
 %Initialize parameters of generation object, G
 G = init(); 
 
-%% crunch
 
-%Create a movie by applying filters to sections
+%Create a movie by applying filters to sections, and colorizing according
+%to pitch class and spectral roughness.
 M = SpectralTensorCrunch(G);
 
 %Remap the color by matching the color distributions in specified by some

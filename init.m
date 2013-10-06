@@ -1,5 +1,6 @@
 function G = init()
-    
+    addpath('Utils')
+    addpath('Data')
     %% Image extraction
         %%% Subroutine takes structure G with fields:
         % -- fnm:   the name of the audio file to be loaded
@@ -43,5 +44,5 @@ function G = init()
     %% Color reweighting
         %%%I: image to use as target for color distributions
         %%%nbins: number of bins to use in calculating color distributions
-        G.I = double(imread('Final_Art_5_meg.jpg'));
+        G.I = double(imread('Final_Art_5_meg.jpg'))/double(255);
         G.nbins = 100;
