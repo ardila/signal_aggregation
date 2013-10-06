@@ -6,7 +6,7 @@ function M=SpectralTensorCrunch(G); plts=0;
 % -- Nbnds: the number of frequency bins (must be greater than 2)
 % -- Nphs:  the number of phase offsets
 
-%%% Outputs a tensor M of the movie frames as a matrix [Frequency x Phase x Time x LAB]
+%%% Outputs a tensor M of the movie frames as a matrix [Frequency x Phase x Time x [Power Harmonicity Roughness]]
 
 fnm=G.fnm;
 Fmn=G.Fmn;
@@ -29,7 +29,7 @@ Nsc=ceil((length(ts)-Npts/2)/Npts);
 ts=[ts; zeros(Npts/2*(Nsc+1),size(ts,2))];
 
 % generate the ERB filter centers
-[~,ERBff,~]=make_erb_cos_filters(Npts,fs,Nbnds-2,Fmn,fs/2);
+[fltbnk,ERBff,~]=make_erb_cos_filters(Npts,fs,Nbnds-2,Fmn,fs/2);
 % generate the tensor of sinusoid operations
 A=zeros(Npts,Nbnds,Nphs);
 tt=[0:(Npts-1)]/fs;
@@ -39,16 +39,40 @@ for jbnd=1:(Nbnds)
     end
 end
 
-% scroll throughs ections 
+% preallocate a frequency vector for computing harmonicity and roughness
+spcff=[1:1:2048]/fs;
+N8ve=ceil(log2(fs/2/Fmn));
+% scrol through our ERB frequency centers
+for jf=1:ERBff
+    % for each ERB bin scroll through 8ves and find the values in frequency
+    % space of all other bins of the same relative pitch
+    ocnt=0;
+    for j8ve=-N8ve:N8ve
+        [~,ndx]=min(abs(spcff-2^(j8ve)*ERBff(jf)));
+        if (ndx~=1 && ndx~=length(spcff))
+            ocnt=ocnt+1;
+            ERB(jf).octtndx(ocnt)=ndx;
+        end
+    end
+    % and for each ERB bin find the bounds in spcff that correspond to the
+    % same ERB pixel
+    ERB(jf).bnnddx=find(fltbnk(:,jf)~=0);
+end
+    
+% scroll through sections 
 for jsc=1:Nsc
     fprintf('Crunching section %d/%d\n',jsc,Nsc)
-    tsc=ts((jsc-1)*Npts/2+[1:Npts],:);
+    tsc=ts((jsc-1)*Npts/2+[1:Npts],1);
+    % generate the spectrum of the time series
+    scspc=fft(tsc,4096);
+    scspc=scspc(1:2048);
+    % scroll through our ER
     % must be done seperately for each channel
-    tscL=repmat(tsc(:,1),[1 Nbnds Nphs]);
-    tscR=repmat(tsc(:,2),[1 Nbnds Nphs]);
-    % perform multiplication and sum over time
-    y(:,:,1,jsc)=squeeze(sum(tscL.*A,1))/Npts;
-    y(:,:,2,jsc)=squeeze(sum(tscL.*A,1))/Npts;
+    tscL=repmat(tsc,[1 Nbnds Nphs]);
+    % perform multiplication and sum over time for power
+    M(:,:,jsc,1)=squeeze(sum(tscL.*A,1))/Npts;
+    % sum powers over all the 8ves to estimate harmonicity
+    M(:,:,jsc,2)=
 end
     
 % select left channel only for output
