@@ -30,7 +30,7 @@ ts=[ts; zeros(Npts/2*(Nsc+1),size(ts,2))];
 
 % generate the ERB filter centers
 [fltbnk,ERBff,~]=make_erb_cos_filters(Npts,fs,Nbnds-2,Fmn,fs/2);
-% generate the tensor of sinusoid operations
+% generate the tensor of sinusoid operations FOR THE TIME (call this tensor A)
 A=zeros(Npts,Nbnds,Nphs);
 tt=[0:(Npts-1)]/fs;
 for jbnd=1:(Nbnds)
@@ -39,8 +39,20 @@ for jbnd=1:(Nbnds)
     end
 end
 
-% preallocate a frequency vector for computing harmonicity and roughness
+% generate the tensor of sinusoid operations, NOT FOR THE TIME but for the
+% frequency (call this tensor B)
+B=zeros(Npts,Nbnds,Nphs);
 spcff=[1:1:2048]/fs;
+for jbnd=1:(Nbnds)
+    for jphs=1:Nphs
+        A(:,jbnd,jphs)=sin(tt*2*pi*ERBff(jbnd)+(2*pi*(jphs-1)/Nphs));
+    end
+end
+
+
+
+% preallocate a frequency vector for computing harmonicity and roughness
+spc
 N8ve=ceil(log2(fs/2/Fmn));
 % scrol through our ERB frequency centers
 for jf=1:ERBff
@@ -71,8 +83,8 @@ for jsc=1:Nsc
     tscL=repmat(tsc,[1 Nbnds Nphs]);
     % perform multiplication and sum over time for power
     M(:,:,jsc,1)=squeeze(sum(tscL.*A,1))/Npts;
-    % and for 
-    %y(:,:,2,jsc)=squeeze(sum(tscL.*A,1))/Npts;
+    % sum powers over all the 8ves to estimate harmonicity
+    M(:,:,jsc,2)=
 end
     
 % select left channel only for output
