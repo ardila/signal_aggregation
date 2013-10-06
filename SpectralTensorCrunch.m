@@ -1,18 +1,21 @@
-function M=SpectralTensorCrunch(G); plts=0;
-
+function M=SpectralTensorCrunch(G) 
 %%% Subroutine takes structure G with fields:
 % -- fnm:   the name of the audio file to be loaded
 % -- Fmn:   the minimum frequency to be computed
 % -- Nbnds: the number of frequency bins (must be greater than 2)
 % -- Nphs:  the number of phase offsets
 
-%%% Outputs a tensor M of the movie frames as a matrix [Frequency x Phase x Time]
+%%% A set of basis vectors is calculated. Each basis vector is a sin
+%%% function at a different frequency and with a different phase offset
+%%% T
 
+%%% Outputs a tensor M of the movie frames as a matrix 
+%%% [Frequency x Phase x Time]
 fnm=G.fnm;
 Fmn=G.Fmn;
 Nbnds=G.Nbnds;
 Nphs=G.Nphs;
-
+plts=G.plot_spectral_tensor;
 %% crunch
 tic
 

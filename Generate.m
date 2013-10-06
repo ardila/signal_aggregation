@@ -6,7 +6,7 @@ G = init();
 %% crunch
 
 %Create a movie by applying filters to sections
-M = put_your_function_here(G);
+M = SpectralTensorCrunch(G);
 
 %Remap the color by matching the color distributions in specified by some
 %file in G
