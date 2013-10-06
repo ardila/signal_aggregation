@@ -42,5 +42,5 @@ function G = init()
     %% Color reweighting
         %%%I: image to use as target for color distributions
         %%%nbins: number of bins to use in calculating color distributions
-        G.I = double(imread('Final_Art_5_mb.jpg'));
+        G.I = double(imread('Final_Art_5_meg.jpg'));
         G.nbins = 100;
