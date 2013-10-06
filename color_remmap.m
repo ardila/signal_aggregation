@@ -7,8 +7,8 @@ function remmapped_tensor = color_remmap(M, G)
 
 %For now, just calculate according to the first frame
 tic
-print 'Calculating color distributions'
-target_color_dists = color_dists(G.I);
+fprintf('Calculating color distributions\n')
+target_color_dists = color_dists(G.I, G.nbins);
 
 remmapped_tensor = zeros(size(M));
 for t = 1:size(M, 4)
