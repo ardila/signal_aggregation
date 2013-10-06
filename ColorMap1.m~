@@ -1,0 +1,13 @@
+% collapse a big matrix across octaves and map pitch specific information
+% to colormappings
+
+% load the phase-spectrum plot
+M=y(:,:,1,1);
+% and the necessary frequency bins
+ERBff=ERBff;
+
+% find the relevant octave span of our frequency range
+N8ve=
+
+
+
