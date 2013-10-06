@@ -1,5 +1,5 @@
 function G = init()
-    
+    addpath('Utils')
     %% Image extraction
         %%% Subroutine takes structure G with fields:
         % -- fnm:   the name of the audio file to be loaded
