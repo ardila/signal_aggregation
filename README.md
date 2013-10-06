@@ -6,4 +6,10 @@ To get this running all you should need to do is clone it, go to that folder in 
 Generate
 ```
 
-Let us know if you have any issus at congratulatinos@gmail.com
+Generate.m explains the overall structure of what's going on, so read that first.
+
+Init explains in slightly more detail parameters you can change to get different results.
+
+Let us know if you have any issues, or want us to explain something
+
+congratulatinos@gmail.com
