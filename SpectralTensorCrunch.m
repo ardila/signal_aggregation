@@ -6,7 +6,7 @@ function M=SpectralTensorCrunch(G); plts=0;
 % -- Nbnds: the number of frequency bins (must be greater than 2)
 % -- Nphs:  the number of phase offsets
 
-%%% Outputs a tensor M of the movie frames as a matrix [Frequency x Phase x Time]
+%%% Outputs a tensor M of the movie frames as a matrix [Frequency x Phase x Time x [Power Harmonicity Roughness]]
 
 fnm=G.fnm;
 Fmn=G.Fmn;
@@ -39,16 +39,17 @@ for jbnd=1:(Nbnds)
     end
 end
 
-% scroll throughs ections 
+% scroll through sections 
 for jsc=1:Nsc
     fprintf('Crunching section %d/%d\n',jsc,Nsc)
-    tsc=ts((jsc-1)*Npts/2+[1:Npts],:);
+    tsc=ts((jsc-1)*Npts/2+[1:Npts],1);
+    scspc=fft(tsc);
     % must be done seperately for each channel
-    tscL=repmat(tsc(:,1),[1 Nbnds Nphs]);
-    tscR=repmat(tsc(:,2),[1 Nbnds Nphs]);
-    % perform multiplication and sum over time
-    y(:,:,1,jsc)=squeeze(sum(tscL.*A,1))/Npts;
-    y(:,:,2,jsc)=squeeze(sum(tscL.*A,1))/Npts;
+    tscL=repmat(tsc,[1 Nbnds Nphs]);
+    % perform multiplication and sum over time for power
+    M(:,:,jsc,1)=squeeze(sum(tscL.*A,1))/Npts;
+    % and for 
+    %y(:,:,2,jsc)=squeeze(sum(tscL.*A,1))/Npts;
 end
     
 % select left channel only for output
