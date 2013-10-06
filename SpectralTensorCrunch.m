@@ -1,6 +1,5 @@
-%function M=SpectralTensorCrunch(G) 
-
-G.fnm='BaktunLoop.wav'; G.Fmn=200; G.Nbnds=8; G.Nphs=4; G.plot_spectral_tensor=1; G.Nft=1024;
+function M=SpectralTensorCrunch(G) 
+%G.fnm='BaktunLoop.wav'; G.Fmn=200; G.Nbnds=256; G.Nphs=256; G.plot_spectral_tensor=1; G.Nft=1024;
 
 %%% Subroutine takes structure G with fields:
 % -- fnm:   the name of the audio file to be loaded
@@ -102,7 +101,7 @@ for jsc=1:Nsc
     % multiply in freq domain and sum over frequencies for harmonicity 
     M(:,:,2,jsc)=20*log10(abs(squeeze(sum(scspc.*B,1)./sum(scspc,1)./sum(B,1))));
     % and for roughness
-    M(:,:,3,jsc)=squeeze(var(20*log10(abs(scspc.*C./repmat(sum(C,1),[Nft/2 1 1]))),0,1));
+    M(:,:,3,jsc)=20*log10(squeeze(var(scspc.*C,0,1)./sum(abs(C),1)));
     %fprintf('size M: %dx%d%dx%d\n',size(M,1),size(M,2),size(M,3),size(M,4))
 end
 
