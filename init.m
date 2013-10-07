@@ -13,10 +13,11 @@ function G = init()
 
         G.fnm='BaktunLoop.wav';
         G.Fmn=200;
-        G.Nbnds=256;
-        G.Nphs=256;
-        G.Nft=4096;
-        G.plot_spectral_tensor = 0;
+        G.Nbnds=8;
+        G.Nphs=8;
+        G.Nft=128; %number of points for fourier transform in calculating
+                    % spectral roughness
+        G.plot_spectral_tensor = 1;
         
     %% Colorization
         %%% After "image extraction" there is one array, I. We want color in
