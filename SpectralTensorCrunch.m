@@ -97,13 +97,15 @@ for jsc=1:Nsc
     M(:,:,1,jsc)=squeeze(sum(tsc.*A,1))/Npts;
     % FOR THE FREQUENCY generate the spectrum of the time series section
     % and retain only positive freqencies
-    scspc=fft(tsc,Nft);
+    scspc=fft(tsc(:,1,1),Nft);
     scspc=scspc(1:Nft/2,:,:);
+    scspc=repmat(scspc,[1 Nbnds Nphs]);
     % multiply in freq domain and sum over frequencies for harmonicity 
     M(:,:,2,jsc)=20*log10(abs(squeeze(sum(real(scspc.*B),1)./sum(abs(scspc),1)./sum(abs(B),1))));
     % and for roughness
     M(:,:,3,jsc)=20*log10(abs(squeeze(var(real(scspc.*C),0,1)./sum(abs(C),1))));
     %fprintf('size M: %dx%d%dx%d\n',size(M,1),size(M,2),size(M,3),size(M,4))
+    save('gotit.mat','G','M')
 end
 
 rntm=toc;
