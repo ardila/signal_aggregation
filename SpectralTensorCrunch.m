@@ -1,5 +1,6 @@
 function M=SpectralTensorCrunch(G) 
-%G.fnm='BaktunLoop.wav'; G.Fmn=200; G.Nbnds=256; G.Nphs=256; G.plot_spectral_tensor=1; G.Nft=1024;
+
+%G.fnm='Data/BaktunLoop.wav'; G.Fmn=200; G.Nbnds=256; G.Nphs=256; G.plot_spectral_tensor=1; G.Nft=4096;
 
 %%% Subroutine takes structure G with fields:
 % -- fnm:   the name of the audio file to be loaded
@@ -40,6 +41,7 @@ ts=[ts; zeros(Npts/2*(Nsc+1),size(ts,2))];
 % generate the tensor of sinusoid operations FOR THE TIME (call this tensor A)
 A=zeros(Npts,Nbnds,Nphs);
 tt=[0:(Npts-1)]/fs;
+fprintf('Crunching basis vectors, for the time\n')
 for jbnd=1:(Nbnds)
     for jphs=1:Nphs
         A(:,jbnd,jphs)=sin(tt*2*pi*ERBff(jbnd)+(2*pi*(jphs-1)/Nphs));
@@ -53,11 +55,12 @@ B=zeros(Nft/2,Nbnds,Nphs);
 C=zeros(Nft/2,Nbnds,Nphs);
 % compute the maximum number of 8ves
 N8ve=ceil(log2(fs/2/Fmn));
+fprintf('Crunching basis vectors, not for the time, but rather for the frequency\n')
 for jbnd=1:(Nbnds)
     % find all values in the frequency spectrum that are 8ves of the thing
     % we care about
     ocnt=0;
-    octnndx=[];
+    octtndx=[];
     for j8ve=-N8ve:N8ve
         [~,ndx]=min(abs(spcff-2^(j8ve)*ERBff(jbnd)));
         if (ndx~=1 && ndx~=length(spcff))
@@ -70,10 +73,8 @@ for jbnd=1:(Nbnds)
     bnddx=[];
     for jf=1:Nft/2
         [~,bnndx]=min(abs(spcff(jf)-ERBff));
-        %fprintf('%d: %d\n',jf,bnndx)
         if bnndx==jbnd;
             bcnt=bcnt+1;
-            %fprintf('Did it: %d\n',bcnt)
             bnddx(bcnt)=jf;
         end
     end
@@ -99,9 +100,9 @@ for jsc=1:Nsc
     scspc=fft(tsc,Nft);
     scspc=scspc(1:Nft/2,:,:);
     % multiply in freq domain and sum over frequencies for harmonicity 
-    M(:,:,2,jsc)=20*log10(abs(squeeze(sum(scspc.*B,1)./sum(scspc,1)./sum(B,1))));
+    M(:,:,2,jsc)=20*log10(abs(squeeze(sum(real(scspc.*B),1)./sum(abs(scspc),1)./sum(abs(B),1))));
     % and for roughness
-    M(:,:,3,jsc)=20*log10(squeeze(var(scspc.*C,0,1)./sum(abs(C),1)));
+    M(:,:,3,jsc)=20*log10(abs(squeeze(var(real(scspc.*C),0,1)./sum(abs(C),1))));
     %fprintf('size M: %dx%d%dx%d\n',size(M,1),size(M,2),size(M,3),size(M,4))
 end
 
